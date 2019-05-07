@@ -1,5 +1,7 @@
 from panda3d.core import BamFile, NodePath, StringStream, decompressString
+
 import DNANode
+
 
 class DNASignBaseline(DNANode.DNANode):
     COMPONENT_CODE = 6
@@ -17,8 +19,7 @@ class DNASignBaseline(DNANode.DNANode):
     def traverse(self, nodePath, dnaStorage):
         node = nodePath.attachNewNode('baseline', 0)
         node.setPosHpr(self.pos, self.hpr)
-        node.setDepthOffset(50)
-        #node.setPos(node, 0, -0.4, 0)
+        node.setPos(node, 0, -0.1, 0)
         if self.data:
             bf = BamFile()
             ss = StringStream()
@@ -27,5 +28,5 @@ class DNASignBaseline(DNANode.DNANode):
             signText = NodePath(bf.readNode())
             signText.reparentTo(node)
         node.flattenStrong()
-        for child in self.children_:
+        for child in self.children:
             child.traverse(nodePath, dnaStorage)

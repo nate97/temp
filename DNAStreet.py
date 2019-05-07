@@ -1,7 +1,9 @@
 from panda3d.core import LVector4f
-import DNANode
+
 import DNAError
+import DNANode
 import DNAUtil
+
 
 class DNAStreet(DNANode.DNANode):
     COMPONENT_CODE = 19

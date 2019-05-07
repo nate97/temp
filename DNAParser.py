@@ -1,53 +1,49 @@
-from direct.stdpy import threading
+from direct.directnotify import DirectNotifyGlobal
 
-import DNALoader
-from DNAStorage import DNAStorage
-from DNASuitPoint import DNASuitPoint
-from DNAGroup import DNAGroup
-from DNAVisGroup import DNAVisGroup
-from DNADoor import DNADoor
+from DNALoader import DNALoader
+
+notify = DirectNotifyGlobal.directNotify.newCategory('dna')
+
 
 class DNABulkLoader:
-    def __init__(self, storage, files):
-        self.dnaStorage = storage
-        self.dnaFiles = files
+    def __init__(self, dnaStorage, dnaFiles):
+        self.dnaStorage = dnaStorage
+        self.dnaFiles = dnaFiles
 
     def loadDNAFiles(self):
-        for file in self.dnaFiles:
-            print 'Reading DNA file...', file
-            loadDNABulk(self.dnaStorage, file)
+        for dnaFile in self.dnaFiles:
+            notify.info('Reading %s' % dnaFile)
+            loadDNABulk(self.dnaStorage, dnaFile)
+
         del self.dnaStorage
         del self.dnaFiles
 
-def loadDNABulk(dnaStorage, file):
-    dnaLoader = DNALoader.DNALoader()
-    if __debug__:
-        file = '../resources/' + file
-    else:
-        file = '/' + file
-    dnaLoader.loadDNAFile(dnaStorage, file)
+
+def loadDNABulk(dnaStorage, dnaFile):
+    dnaLoader = DNALoader()
+    dnaFile = '/' + dnaFile
+    dnaLoader.loadDNAFile(dnaStorage, dnaFile)
     dnaLoader.destroy()
 
-def loadDNAFile(dnaStorage, file):
-    print 'Reading DNA file...', file
-    dnaLoader = DNALoader.DNALoader()
-    if __debug__:
-        file = '../resources/' + file
-    else:
-        file = '/' + file
-    node = dnaLoader.loadDNAFile(dnaStorage, file)
+
+def loadDNAFile(dnaStorage, dnaFile):
+    notify.info('Reading %s' % dnaFile)
+
+    dnaLoader = DNALoader()
+    dnaFile = '/' + dnaFile
+    node = dnaLoader.loadDNAFile(dnaStorage, dnaFile)
     dnaLoader.destroy()
     if node.node().getNumChildren() > 0:
         return node.node()
+
     return None
 
-def loadDNAFileAI(dnaStorage, file):
-    dnaLoader = DNALoader.DNALoader()
-    if __debug__:
-        file = '../resources/' + file
-    else:
-        file = '/' + file
-    data = dnaLoader.loadDNAFileAI(dnaStorage, file)
+
+def loadDNAFileAI(dnaStorage, dnaFile):
+    notify.debug('Reading %s' % dnaFile)
+
+    dnaLoader = DNALoader()
+    dnaFile = '/' + dnaFile
+    data = dnaLoader.loadDNAFileAI(dnaStorage, dnaFile)
     dnaLoader.destroy()
     return data
-

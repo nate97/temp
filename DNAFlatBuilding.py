@@ -1,8 +1,10 @@
+import random
+
 from panda3d.core import NodePath, DecalEffect
+
 import DNANode
 import DNAWall
 
-import random
 
 class DNAFlatBuilding(DNANode.DNANode):
     COMPONENT_CODE = 9
@@ -104,7 +106,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         scale.setX(self.width)
         internalNode.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
-        for child in self.children_:
+        for child in self.children:
             if isinstance(child, DNAWall.DNAWall):
                 child.traverse(internalNode, dnaStorage)
             else:

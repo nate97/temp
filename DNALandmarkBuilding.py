@@ -1,7 +1,9 @@
 from panda3d.core import LVector4f
+
+import DNAError
 import DNANode
 import DNAUtil
-import DNAError
+
 
 class DNALandmarkBuilding(DNANode.DNANode):
     COMPONENT_CODE = 13
@@ -46,7 +48,7 @@ class DNALandmarkBuilding(DNANode.DNANode):
         return self.wallColor
 
     def setupSuitBuildingOrigin(self, nodePathA, nodePathB):
-        if (self.getName()[:2] == 'tb') and (self.getName()[3].isdigit()) and (self.getName().find(':') != -1):
+        if (self.getName()[:2] == 'tb') and (self.getName()[2].isdigit()) and (self.getName().find(':') != -1):
             name = self.getName()
             name = 's' + name[1:]
             node = nodePathB.find('**/*suit_building_origin')
@@ -73,7 +75,8 @@ class DNALandmarkBuilding(DNANode.DNANode):
         nodePath = node.copyTo(nodePath, 0)
         nodePath.setName(self.getName())
         nodePath.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
-        self.setupSuitBuildingOrigin(npA, nodePath)
-        for child in self.children_:
+        if not self.getBuildingType():
+            self.setupSuitBuildingOrigin(npA, nodePath)
+        for child in self.children:
             child.traverse(nodePath, dnaStorage)
         nodePath.flattenStrong()

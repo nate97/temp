@@ -1,14 +1,17 @@
-from panda3d.core import *
-from direct.distributed.PyDatagramIterator import PyDatagramIterator
-from direct.distributed.PyDatagram import PyDatagram
-from direct.stdpy.file import *
+import sys
+import zlib
 
-import DNAUtil
-import DNAError
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.PyDatagramIterator import PyDatagramIterator
+from direct.stdpy.file import *
+from panda3d.core import NodePath, PandaNode, LVector3f
+
 import DNAAnimBuilding
 import DNAAnimProp
+import DNABattleCell
 import DNACornice
 import DNADoor
+import DNAError
 import DNAFlatBuilding
 import DNAFlatDoor
 import DNAGroup
@@ -21,48 +24,79 @@ import DNASignBaseline
 import DNASignGraphic
 import DNASignText
 import DNAStreet
+import DNASuitPoint
+import DNAUtil
 import DNAVisGroup
 import DNAWall
 import DNAWindows
-import DNABattleCell
-import DNASuitPoint
 
-import zlib
-import sys
-import io
+JAZZ_ASCII = '''.....,,,.............................................:,.........................
+II?IIII~II?........................................+,?=?~:::....................
+?:I=IIII?=:?I:......................................,II+?~?II??~,...............
+7??I?IIIIIIIIII?......................................,=IIIIIIIII?=.............
+=??::++IIIIII?+III7:.. ....+=::,,,............   .....,~:?IIIIII????............
+,.:I=++?+IIIIII=I77II?,.......,=I7IIIIIII:....  .   ....::IIIIIII?II?,..........
+....:.,?II7I?II7I+IIIIII:....,..~,?IIIIIIII:..... .    ..+?~IIIIIIIII+,.........
+.....,,+~?II?IIIIII?IIIIII~:.,??I~+IIIIIIIIIII7I:..... ...~+?IIIIIIIIII:,,......
+.....~.,~,:?77?II?IIII+IIIII?,...:,+==I?IIIIIIIII?:... ....:=:IIIIIIII=I?=,.....
+I:......:.7+I?IIIIIIII+I+IIIIII~...,?III7+IIIIIIIIII~...  .....+IIIIIII+?III=,..
+$Z$7,.....:=I=+?IIIIII?,II?IIIII~,.,~.~:I7I7IIIIIIIII=,... ..:7~77IIIIII???III+:
+OO88OOZ$?7Z.$?IIIIII?:$OI,,::$IIIII~..=+??IIIIII??IIIII:......:II7?IIIIIIIIIIII?
+?I?7IIIII::$ZZOO8II??I:I+~,7O=OO$7III,~?+I?IIIIIII~8$III+.....~=~:IIIIIIII+I7II?
+O$IIIIIIIIII:,7$OZOI~?+II?~..,,8OZZO8I~+=II+=IIIIII7$88III=...~7$Z$I?IIIIIIIIIII
+IOZOIII7IIIIII=+???8ZZOZI??,...,I=8OOOOZ??II+IIIIIOO,~ZOZIII,,77$$$OZ$?IIIIIIIII
+$$I?ZOOIIIIIII?III?III7OOOOZ,...~II7I8OO$O7II?IIIII8$I..88O?I=.=I.I$OOOIIII?I??:
+O$ZO7$OZ$I7IIIIIIII????I7OZZO$?...I?+?I78OZO$IIIIIII8O7=,8OOZI7:?=7+?ZZO8OII7,II
+IIIII.:,.I:?IIIIIII?IIIIII?=ZO,$$...,+?:IIOOOO$II+?IIOZ7+.~+OZOII~Z$+?I7OOOI:+=?
++II?I~I:...,+I?IIIIIIIIIIIII?II=,Z$?...=~?II7O8O$IIIII88II,,I+ZOOI$$O+IIIIOOO7=I
++?II?II+=.....II?I?~I??II+I?,I?=+~=.,$..,+~~+?=+ZIOIIIIZII++.~IIOO8$?::II+~IOOIZ
+IIII::7~~?+,.....?,,:+I=I=?:~,:+.......+..,.~:?I?7OZOO7+$~?I:.,I?I?OOZ??IIIIIIO?
+III+I7:==~+II,....,=~+==++II?==I+=,......=..=++?II?IOO88???II..,+II$ZO8~IIII?II,
+??III+7I=I7I~~,.....=+I+?~+~:??,=.... .. . .....+7IIIIIII?+?I,,,..?+IZOI+I+IIII?
+I+??IIIIII~,I=I:. ...=,,,,..~?~.,I..,...  .......+=I=??II?IIIII,,..=I?III,,II??I
+,.+~~+I+I~+II+:I....................... .     .....,.+?+I7~II=+I,....+I+~~,~?+=,
+...,II?::I::=.?=I,............... .. ...       .. ...,?II+:I++?I: ......=?++,~:?
+.... .,.I==I+,,.:I,....................................~I7??I~:+=:........~,.,.+
+.........,.II=+:.......................................=??III~,:I,..........?...
+..................................................... ..,:?I:~::+=,.,...........
+................................ ................ ... .....,=:?::::.............
+..............................................................I?:~~..,..........
+...............................................................,+~...~=.........
+..................................................................?,=?..........'''
 
 sys.setrecursionlimit(10000)
 
 compClassTable = {
-1: DNAGroup.DNAGroup,
-2: DNAVisGroup.DNAVisGroup,
-3: DNANode.DNANode,
-4: DNAProp.DNAProp,
-5: DNASign.DNASign,
-6: DNASignBaseline.DNASignBaseline,
-7: DNASignText.DNASignText,
-8: DNASignGraphic.DNASignGraphic,
-9: DNAFlatBuilding.DNAFlatBuilding,
-10: DNAWall.DNAWall,
-11: DNAWindows.DNAWindows,
-12: DNACornice.DNACornice,
-13: DNALandmarkBuilding.DNALandmarkBuilding,
-14: DNAAnimProp.DNAAnimProp,
-15: DNAInteractiveProp.DNAInteractiveProp,
-16: DNAAnimBuilding.DNAAnimBuilding,
-17: DNADoor.DNADoor,
-18: DNAFlatDoor.DNAFlatDoor,
-19: DNAStreet.DNAStreet
+    1: DNAGroup.DNAGroup,
+    2: DNAVisGroup.DNAVisGroup,
+    3: DNANode.DNANode,
+    4: DNAProp.DNAProp,
+    5: DNASign.DNASign,
+    6: DNASignBaseline.DNASignBaseline,
+    7: DNASignText.DNASignText,
+    8: DNASignGraphic.DNASignGraphic,
+    9: DNAFlatBuilding.DNAFlatBuilding,
+    10: DNAWall.DNAWall,
+    11: DNAWindows.DNAWindows,
+    12: DNACornice.DNACornice,
+    13: DNALandmarkBuilding.DNALandmarkBuilding,
+    14: DNAAnimProp.DNAAnimProp,
+    15: DNAInteractiveProp.DNAInteractiveProp,
+    16: DNAAnimBuilding.DNAAnimBuilding,
+    17: DNADoor.DNADoor,
+    18: DNAFlatDoor.DNAFlatDoor,
+    19: DNAStreet.DNAStreet
 }
 
 childlessComps = (
-7, # DNASignText
-11, # DNAWindows
-12, # DNACornice
-17, # DNADoor
-18, # DNAFlatDoor
-19 # DNAStreet
+    7,  # DNASignText
+    11,  # DNAWindows
+    12,  # DNACornice
+    17,  # DNADoor
+    18,  # DNAFlatDoor
+    19  # DNAStreet
 )
+
 
 class DNALoader:
     def __init__(self):
@@ -88,19 +122,19 @@ class DNALoader:
         for _ in xrange(numTextures):
             code = DNAUtil.dgiExtractString8(dgi)
             filename = DNAUtil.dgiExtractString8(dgi)
-            self.dnaStorage.storeTexture(code, loader.pdnaTexture(filename, okMissing=True))
+            self.dnaStorage.storeTexture(code, loader.jazzTexture(filename, okMissing=True))
 
         # Fonts
         numFonts = dgi.getUint16()
         for _ in xrange(numFonts):
             code = DNAUtil.dgiExtractString8(dgi)
             filename = DNAUtil.dgiExtractString8(dgi)
-            self.dnaStorage.storeFont(code, loader.pdnaFont(filename))
+            self.dnaStorage.storeFont(code, loader.jazzFont(filename))
 
         # Nodes
-        self.handleNode(dgi, target = self.dnaStorage.storeNode)
-        self.handleNode(dgi, target = self.dnaStorage.storeHoodNode)
-        self.handleNode(dgi, target = self.dnaStorage.storePlaceNode)
+        self.handleNode(dgi, target=self.dnaStorage.storeNode)
+        self.handleNode(dgi, target=self.dnaStorage.storeHoodNode)
+        self.handleNode(dgi, target=self.dnaStorage.storePlaceNode)
 
         # Blocks
         numBlocks = dgi.getUint16()
@@ -120,7 +154,8 @@ class DNALoader:
             x, y, z = (dgi.getInt32() / 100.0 for i in xrange(3))
             graph = dgi.getUint8()
             landmarkBuildingIndex = dgi.getInt8()
-            self.dnaStorage.storeSuitPoint(DNASuitPoint.DNASuitPoint(index, pointType, LVector3f(x, y, z), landmarkBuildingIndex))
+            self.dnaStorage.storeSuitPoint(
+                DNASuitPoint.DNASuitPoint(index, pointType, LVector3f(x, y, z), landmarkBuildingIndex))
 
         # Suit Edges
         numEdges = dgi.getUint16()
@@ -174,7 +209,7 @@ class DNALoader:
                 continue
             break
 
-    def handleNode(self, dgi, target = None):
+    def handleNode(self, dgi, target=None):
         if target is None:
             return
         numNodes = dgi.getUint16()
@@ -182,7 +217,7 @@ class DNALoader:
             code = DNAUtil.dgiExtractString8(dgi)
             file = DNAUtil.dgiExtractString8(dgi)
             node = DNAUtil.dgiExtractString8(dgi)
-            np = NodePath(loader.pdnaModel(file))
+            np = NodePath(loader.jazzModel(file))
             if node:
                 newNode = np.find('**/' + node).copyTo(NodePath())
                 np.removeNode()
@@ -193,13 +228,13 @@ class DNALoader:
 
     def loadDNAFileBase(self, dnaStorage, file):
         self.dnaStorage = dnaStorage
-        dnaFile = io.open(file, 'rb')
+        dnaFile = open(file, 'rb')
         dnaData = dnaFile.read()
         dg = PyDatagram(dnaData)
         dgi = PyDatagramIterator(dg)
         dnaFile.close()
-        header = dgi.extractBytes(5)
-        if header != 'PDNA\n':
+        header = dgi.extractBytes(2673)
+        if header != JAZZ_ASCII + '\n':
             raise DNAError.DNAError('Invalid header: %s' % (header))
         compressed = dgi.getBool()
         dgi.skipBytes(1)

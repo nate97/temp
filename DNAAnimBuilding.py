@@ -1,6 +1,7 @@
-import DNALandmarkBuilding
 import DNAError
+import DNALandmarkBuilding
 import DNAUtil
+
 
 class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
     COMPONENT_CODE = 16
@@ -28,6 +29,6 @@ class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
         node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
         node.setTag('DNAAnim', self.animName)
         self.setupSuitBuildingOrigin(nodePath, node)
-        for child in self.children_:
+        for child in self.children:
             child.traverse(nodePath, dnaStorage)
         nodePath.flattenStrong()

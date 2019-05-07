@@ -1,8 +1,8 @@
-from panda3d.core import *
 from DNAError import DNAError
-from DNASuitPoint import DNASuitPoint
-from DNASuitPath import DNASuitPath
 from DNASuitEdge import DNASuitEdge
+from DNASuitPath import DNASuitPath
+from DNASuitPoint import DNASuitPoint
+
 
 class DNAStorage:
     def __init__(self):
@@ -52,7 +52,7 @@ class DNAStorage:
         endPoint = self.suitPointMap.get(endIndex)
         if (not startPoint) or (not endPoint):
             return 0.0
-        distance = (endPoint.getPos()-startPoint.getPos()).length()
+        distance = (endPoint.getPos() - startPoint.getPos()).length()
         return distance / suitWalkSpeed
 
     def getSuitEdgeZone(self, startIndex, endIndex):
@@ -175,7 +175,7 @@ class DNAStorage:
         self.fonts[code] = font
 
     def getBlock(self, name):
-        block = name[name.find(':')-2:name.find(':')]
+        block = name[name.find(':') - 2:name.find(':')]
         if not block[0].isdigit():
             block = block[1:]
         return block
@@ -290,8 +290,8 @@ class DNAStorage:
     def resetBlockDoors(self):
         self.blockDoors = {}
 
-    def getSignTransformFromNodePath(self, nodePath):
-        return nodePath.getNetTransform().getMat()
+    def getTitleBlockAt(self, blockIndex):
+        return self.getBlockNumberAt(blockIndex)
 
     def cleanup(self):
         self.resetBattleCells()

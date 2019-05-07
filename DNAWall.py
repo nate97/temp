@@ -1,8 +1,10 @@
 from panda3d.core import LVector4f
-import DNANode
-import DNAFlatBuilding
+
 import DNAError
+import DNAFlatBuilding
+import DNANode
 import DNAUtil
+
 
 class DNAWall(DNANode.DNANode):
     COMPONENT_CODE = 10
@@ -46,7 +48,7 @@ class DNAWall(DNANode.DNANode):
         self.scale.setZ(self.height)
         node.setPosHprScale(self.pos, self.hpr, self.scale)
         node.setColor(self.color)
-        for child in self.children_:
+        for child in self.children:
             child.traverse(node, dnaStorage)
         node.flattenStrong()
         DNAFlatBuilding.DNAFlatBuilding.currentWallHeight += self.height

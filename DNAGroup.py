@@ -1,40 +1,42 @@
 from panda3d.core import PandaNode
+
 import DNAUtil
+
 
 class DNAGroup:
     COMPONENT_CODE = 1
 
     def __init__(self, name):
         self.name = name
-        self.children_ = []
-        self.parent_ = None
+        self.children = []
+        self.parent = None
         self.visGroup = None
 
     def add(self, child):
-        self.children_ += [child]
+        self.children += [child]
 
     def remove(self, child):
-        self.children_.remove(child)
+        self.children.remove(child)
 
     def at(self, index):
-        return self.children_[index]
+        return self.children[index]
 
     def setParent(self, parent):
-        self.parent_ = parent
+        self.parent = parent
         self.visGroup = parent.getVisGroup()
 
     def getParent(self):
-        return self.parent_
+        return self.parent
 
     def clearParent(self):
-        self.parent_ = None
+        self.parent = None
         self.visGroup = None
 
     def getVisGroup(self):
         return self.visGroup
 
     def getNumChildren(self):
-        return len(self.children_)
+        return len(self.children)
 
     def getName(self):
         return self.name
@@ -50,5 +52,5 @@ class DNAGroup:
     def traverse(self, nodePath, dnaStorage):
         node = PandaNode(self.name)
         nodePath = nodePath.attachNewNode(node, 0)
-        for child in self.children_:
+        for child in self.children:
             child.traverse(nodePath, dnaStorage)

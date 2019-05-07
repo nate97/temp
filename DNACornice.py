@@ -1,7 +1,9 @@
 from panda3d.core import LVector4f, LVector3f, DecalEffect
-import DNAGroup
+
 import DNAError
+import DNAGroup
 import DNAUtil
+
 
 class DNACornice(DNAGroup.DNAGroup):
     COMPONENT_CODE = 12
@@ -40,9 +42,8 @@ class DNACornice(DNAGroup.DNAGroup):
         np.setPosHprScale(
             LVector3f(0, 0, 0),
             LVector3f(0, 0, 0),
-            LVector3f(1, pParentXScale/parentZScale,
-                      pParentXScale/parentZScale))
-        np.setDepthOffset(1)
+            LVector3f(1, pParentXScale / parentZScale,
+                      pParentXScale / parentZScale))
         np.setEffect(DecalEffect.make())
         np.flattenStrong()
         node = node.getParent().find('**/*_nd')
@@ -50,8 +51,8 @@ class DNACornice(DNAGroup.DNAGroup):
         np.setPosHprScale(
             LVector3f(0, 0, 0),
             LVector3f(0, 0, 0),
-            LVector3f(1, pParentXScale/parentZScale,
-                      pParentXScale/parentZScale))
+            LVector3f(1, pParentXScale / parentZScale,
+                      pParentXScale / parentZScale))
         np.flattenStrong()
         nodePathA.setPosHprScale(
             LVector3f(0, 0, node.getScale().getZ()),

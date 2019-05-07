@@ -1,5 +1,7 @@
 from panda3d.core import ModelNode
+
 import DNAAnimProp
+
 
 class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
     COMPONENT_CODE = 15
@@ -12,7 +14,7 @@ class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
         self.cellId = id
 
     def getCellId(self):
-        return cellId
+        return self.cellId
 
     def makeFromDGI(self, dgi):
         DNAAnimProp.DNAAnimProp.makeFromDGI(self, dgi)
@@ -32,6 +34,5 @@ class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
         node.setTag('DNACellIndex', str(self.cellId))
         node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
         node.setColorScale(self.getColor(), 0)
-        node.flattenStrong()
-        for child in self.children_:
+        for child in self.children:
             child.traverse(node, dnaStorage)

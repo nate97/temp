@@ -1,7 +1,9 @@
 from panda3d.core import LVector3f
-import DNAGroup
+
 import DNABattleCell
+import DNAGroup
 import DNAUtil
+
 
 class DNAVisGroup(DNAGroup.DNAGroup):
     COMPONENT_CODE = 2

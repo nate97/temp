@@ -1,6 +1,7 @@
 import DNAProp
 from DNAUtil import *
 
+
 class DNAAnimProp(DNAProp.DNAProp):
     COMPONENT_CODE = 14
 
@@ -31,6 +32,5 @@ class DNAAnimProp(DNAProp.DNAProp):
         node.setTag('DNAAnim', self.getAnim())
         node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
         node.setColorScale(self.getColor(), 0)
-        node.flattenStrong()
-        for child in self.children_:
+        for child in self.children:
             child.traverse(node, dnaStorage)

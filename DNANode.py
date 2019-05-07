@@ -1,5 +1,7 @@
 from panda3d.core import LVector3f, PandaNode
+
 import DNAGroup
+
 
 class DNANode(DNAGroup.DNAGroup):
     COMPONENT_CODE = 3
@@ -47,9 +49,7 @@ class DNANode(DNAGroup.DNAGroup):
         self.scale = LVector3f(sx, sy, sz)
 
     def traverse(self, nodePath, dnaStorage):
-        node = PandaNode(self.name)
-        node = nodePath.attachNewNode(node, 0)
+        node = nodePath.attachNewNode(self.name)
         node.setPosHprScale(self.pos, self.hpr, self.scale)
-        for child in self.children_:
+        for child in self.children:
             child.traverse(node, dnaStorage)
-        node.flattenMedium()

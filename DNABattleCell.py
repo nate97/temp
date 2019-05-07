@@ -1,5 +1,3 @@
-from DNAUtil import *
-
 class DNABattleCell:
     COMPONENT_CODE = 21
 

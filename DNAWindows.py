@@ -1,9 +1,11 @@
+import random
+
 from panda3d.core import LVector4f, NodePath, DecalEffect
-import DNAGroup
+
 import DNAError
+import DNAGroup
 import DNAUtil
 
-import random
 
 class DNAWindows(DNAGroup.DNAGroup):
     COMPONENT_CODE = 11
@@ -40,7 +42,7 @@ class DNAWindows(DNAGroup.DNAGroup):
         node_l = dnaStorage.findNode(stripped + 'l')
         if (node_r is None) or (node_l is None):
             raise DNAError.DNAError('DNAWindows code %s not found in'
-                           'DNAStorage' % code)
+                                    'DNAStorage' % code)
 
         def makeWindow(x, y, z, parentNode, color, scale, hpr, flip=False):
             node = node_r if not flip else node_l
@@ -50,7 +52,6 @@ class DNAWindows(DNAGroup.DNAGroup):
             window.setHpr(hpr)
             window.setPos(x, 0, z)
             window.setDepthOffset(1)
-            window.setEffect(DecalEffect.make())
             window.flattenStrong()
 
         offset = lambda: random.random() % 0.0375

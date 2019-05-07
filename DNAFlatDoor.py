@@ -1,5 +1,7 @@
 from panda3d.core import NodePath, DecalEffect
+
 import DNADoor
+
 
 class DNAFlatDoor(DNADoor.DNADoor):
     COMPONENT_CODE = 18
@@ -10,6 +12,5 @@ class DNAFlatDoor(DNADoor.DNADoor):
         node.setScale(NodePath(), (1, 1, 1))
         node.setPosHpr((0.5, 0, 0), (0, 0, 0))
         node.setColor(self.getColor())
-        node.setDepthOffset(1)
         node.getNode(0).setEffect(DecalEffect.make())
         node.flattenStrong()
